@@ -726,6 +726,24 @@ describe('tests from issues', () => {
     expect(result).toMatchSnapshot();
   });
 
+  it('issue #3721: should handle application/vnd.api+json content type', async () => {
+    const result = await generateEndpoints({
+      apiFile: './tmp/emptyApi.ts',
+      schemaFile: './test/fixtures/issue-3721-vnd-api-json.json',
+    });
+
+    // Response types should be properly generated, not `unknown`
+    expect(result).toContain('export type GetUserProfileApiResponse =');
+    expect(result).not.toMatch(/export type GetUserProfileApiResponse\s*=\s*unknown/);
+    expect(result).toContain('UserProfile');
+
+    // Request body should also be properly handled
+    expect(result).toContain('export type CreateUserApiResponse =');
+    expect(result).not.toMatch(/export type CreateUserApiResponse\s*=\s*unknown/);
+
+    expect(result).toMatchSnapshot();
+  });
+
   it('issue #3369: discriminated unions should use enum values, not schema names', async () => {
     const result = await generateEndpoints({
       apiFile: './tmp/emptyApi.ts',

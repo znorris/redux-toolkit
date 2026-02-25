@@ -3256,6 +3256,48 @@ export type Allowance =
 "
 `;
 
+exports[`tests from issues > issue #3721: should handle application/vnd.api+json content type 1`] = `
+"import { api } from "./tmp/emptyApi";
+const injectedRtkApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    getUserProfile: build.query<
+      GetUserProfileApiResponse,
+      GetUserProfileApiArg
+    >({
+      query: (queryArg) => ({ url: \`/api/v1/users/\${queryArg.id}\` }),
+    }),
+    createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
+      query: (queryArg) => ({
+        url: \`/api/v1/users\`,
+        method: "POST",
+        body: queryArg.createUserRequest,
+      }),
+    }),
+  }),
+  overrideExisting: false,
+});
+export { injectedRtkApi as enhancedApi };
+export type GetUserProfileApiResponse =
+  /** status 200 Result of performing a successful operation */ UserProfile;
+export type GetUserProfileApiArg = {
+  id: string;
+};
+export type CreateUserApiResponse = /** status 201 User created */ UserProfile;
+export type CreateUserApiArg = {
+  createUserRequest: CreateUserRequest;
+};
+export type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+};
+export type CreateUserRequest = {
+  name: string;
+  email: string;
+};
+"
+`;
+
 exports[`yaml parsing > should be able to use read a yaml file 1`] = `
 "import { api } from "./tmp/emptyApi";
 export const addTagTypes = ["pet", "store", "user"] as const;
